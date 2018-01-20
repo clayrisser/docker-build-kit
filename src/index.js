@@ -13,9 +13,11 @@ commander.command('pull');
 commander.command('push');
 commander.command('info');
 commander.command('up');
-commander.command('run');
-commander.command('ssh');
+commander.command('run [service]');
+commander.command('ssh [service]');
 commander.action(async (cmd, options) => {
+  let argument = null;
+  if (typeof options === 'string') argument = options;
   const compose = await new Promise((resolve, reject) => {
     fs.readFile(path.resolve(process.cwd(), 'docker-compose.yml'), (err, data) => {
       if (err) return reject(err);
@@ -66,18 +68,22 @@ commander.action(async (cmd, options) => {
         '--force-recreate'
       ]);
       break;
-    case 'run':
+    case 'run': {
+      let currentServiceName = serviceName;
+      if (argument) currentServiceName = argument;
       await exec('docker-compose', [
         '-f',
         path.resolve('docker-compose.yml'),
         'run',
-        serviceName
+        currentServiceName
       ]);
-      break;
-    case 'ssh':
+    } break;
+    case 'ssh': {
       let containerName = null;
+      let currentServiceName = serviceName;
+      if (argument) currentServiceName = argument;
       _.each(await getContainerNames(), (possibleContainerName) => {
-        if (possibleContainerName.includes(`${serviceName.replace(/[^\w\d]/g, '')}_${serviceName}`)) {
+        if (possibleContainerName.includes(`_${currentServiceName}`)) {
           containerName = possibleContainerName;
           return false;
         }
@@ -98,10 +104,10 @@ commander.action(async (cmd, options) => {
           'run',
           '--entrypoint',
           '/bin/sh',
-          serviceName
+          currentServiceName
         ], { stdio: 'inherit' });
       }
-      break;
+    } break;
   }
 }).parse(process.argv);
 
