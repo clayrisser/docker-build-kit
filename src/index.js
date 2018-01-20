@@ -77,7 +77,7 @@ commander.action(async (cmd, options) => {
     case 'ssh':
       let containerName = null;
       _.each(await getContainerNames(), (possibleContainerName) => {
-        if (possibleContainerName.includes(serviceName.replace(/[^\w\d]/g, ''))) {
+        if (possibleContainerName.includes(`${serviceName.replace(/[^\w\d]/g, '')}_${serviceName}`)) {
           containerName = possibleContainerName;
           return false;
         }

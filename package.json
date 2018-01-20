@@ -1,6 +1,6 @@
 {
   "name": "dbk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tooling for building and testing docker images",
   "main": "lib/index.js",
   "module": "es/index.js",
