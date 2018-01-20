@@ -117,6 +117,7 @@ function exec(cmd, args, options) {
         stderr.write(data.toString());
       });
     }
+    process.on('SIGINT', () => {});
     proc.on('close', resolve);
   });
 }
@@ -134,6 +135,7 @@ function getContainerNames() {
     proc.stderr.on('data', (data) => {
       return reject(new Error(data.toString()));
     });
+    process.on('SIGINT', () => {});
     proc.on('close', resolve);
   });
 }
