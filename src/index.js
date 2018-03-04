@@ -12,23 +12,37 @@ import error from './error';
 import { version } from '../package.json';
 
 commander.version(version);
-commander.option('-i --image [image]', 'name of image');
-commander.option('-s --service [service]', 'name of the service');
-commander.option('-t --tag [tag]', 'tag of docker image');
+commander.option('-c --compose [path]', 'docker compose path');
+commander.option('-f --dockerfile [path]', 'dockerfile path');
+commander.option('-i --image [name]', 'name of image');
+commander.option('-s --service [name]', 'name of the service');
+commander.option('-t --tag [name]', 'tag of docker image');
 commander.option('-v --verbose', 'verbose logging');
-commander.command('build');
-commander.command('pull');
-commander.command('push');
-commander.command('info');
-commander.command('up');
+commander.command('build [service]');
+commander.command('info [service]');
+commander.command('pull [service]');
+commander.command('push [service]');
 commander.command('run [service]');
 commander.command('ssh [service]');
+commander.command('up');
 commander.action((cmd, options) => action(cmd, options).catch(error));
 commander.parse(process.argv);
 
 async function action(cmd, options) {
   let argument = null;
   if (_.isString(options)) argument = options;
+  if (commander.compose)
+    await validate(commander.compose || '', joi.string(), 'compose');
+  if (commander.dockerfile)
+    await validate(commander.dockerfile || '', joi.string(), 'dockerfile');
+  const dockerfilePath = path.resolve(
+    process.cwd(),
+    commander.dockerfile || 'Dockerfile'
+  );
+  const composePath = path.resolve(
+    process.cwd(),
+    commander.compose || 'docker-compose.yml'
+  );
   let compose = await new Promise(resolve => {
     fs.readFile(
       path.resolve(process.cwd(), 'docker-compose.yml'),
@@ -55,7 +69,10 @@ async function action(cmd, options) {
   const tagName = commander.tag || image.replace(/^.+\:/, '');
   switch (cmd) {
     case 'build':
-      await docker.build({ image: `${imageName}:${tagName}` });
+      await docker.build({
+        image: `${imageName}:${tagName}`,
+        dockerfile: dockerfilePath
+      });
       break;
     case 'pull':
       await docker.pull({ image: `${imageName}:${tagName}` });
@@ -69,18 +86,13 @@ async function action(cmd, options) {
     case 'up':
       await easycp('docker-compose', [
         '-f',
-        path.resolve(process.cwd(), 'docker-compose.yml'),
+        composePath,
         'up',
         '--force-recreate'
       ]);
       break;
     case 'run':
-      await easycp('docker-compose', [
-        '-f',
-        path.resolve(process.cwd(), 'docker-compose.yml'),
-        'run',
-        serviceName
-      ]);
+      await easycp('docker-compose', ['-f', composePath, 'run', serviceName]);
       break;
     case 'ssh':
       {
@@ -100,14 +112,7 @@ async function action(cmd, options) {
         } else {
           await easycp(
             'docker-compose',
-            [
-              '-f',
-              path.resolve('docker-compose.yml'),
-              'run',
-              '--entrypoint',
-              '/bin/sh',
-              serviceName
-            ],
+            ['-f', composePath, 'run', '--entrypoint', '/bin/sh', serviceName],
             { stdio: 'inherit' }
           );
         }

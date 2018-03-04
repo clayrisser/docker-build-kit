@@ -1,2 +1,5 @@
 some-service:
   image: jamrizzi/some-image:stable
+
+another-service:
+  image: jamrizzi/another-image:stable
