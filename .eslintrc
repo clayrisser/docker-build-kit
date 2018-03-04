@@ -8,7 +8,9 @@
     "no-plusplus": "off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
+    "no-use-before-define": "off",
     "no-useless-escape": "off",
+    "yoda": "off",
     "no-unused-vars": [
       "warn",
       {

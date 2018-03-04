@@ -1,7 +1,7 @@
 import easycp, { readcp } from 'easycp';
 import path from 'path';
 
-export default class Docker {
+class Docker {
   async build({
     image,
     dockerfile = path.resolve(process.cwd(), 'Dockerfile'),
@@ -15,7 +15,7 @@ export default class Docker {
     return result.split('\n').slice(0, -1);
   }
 
-  async info(image) {
+  async info({ image }) {
     return easycp('docker', ['inspect', '-f', '{{.Config.Labels}}', image]);
   }
 
@@ -39,3 +39,5 @@ export default class Docker {
     ]);
   }
 }
+
+export default new Docker();

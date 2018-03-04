@@ -1,0 +1,2 @@
+some-service:
+  image: jamrizzi/some-image:stable

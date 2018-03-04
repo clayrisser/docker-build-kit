@@ -1,6 +1,6 @@
 {
   "name": "dbk",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Tooling for building and testing docker images",
   "homepage": "https://github.com/jamrizzi/dbk",
   "author": {
@@ -17,14 +17,18 @@
     "clean": "rm -rf lib",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
-    "start": "npm run lint && babel-node demo",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "start": "npm run lint && cd demo && babel-node ../src"
   },
   "dependencies": {
+    "boom": "^7.2.0",
     "commander": "^2.14.1",
+    "easy-joi": "0.0.2",
     "easycp": "0.0.2",
+    "joi": "^13.1.2",
     "js-yaml": "^3.10.0",
-    "lodash": "^4.17.5"
+    "lodash": "^4.17.5",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
