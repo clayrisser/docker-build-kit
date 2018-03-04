@@ -1,5 +1,0 @@
-version: '2'
-
-services:
-  docker-build-kit:
-    image: jamrizzi/docker-build-kit:latest

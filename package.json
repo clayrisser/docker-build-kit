@@ -1,32 +1,60 @@
 {
   "name": "dbk",
-  "version": "0.1.3",
+  "version": "0.0.1",
   "description": "Tooling for building and testing docker images",
+  "homepage": "https://github.com/jamrizzi/dbk",
+  "author": {
+    "name": "Jam Risser",
+    "email": "jam@jamrizzi.com",
+    "url": "https://jam.jamrizzi.com"
+  },
   "main": "lib/index.js",
-  "module": "es/index.js",
   "files": [
-    "es",
-    "lib",
-    "umd"
+    "lib"
   ],
   "scripts": {
-    "start": "npm run build && node ./lib -h",
-    "build": "node ./node_modules/jnwb/lib/bin/nwb build-web-module",
-    "clean": "node ./node_modules/jnwb/lib/bin/nwb clean-module",
-    "test": "node ./node_modules/jnwb/lib/bin/nwb test",
-    "test:coverage": "node ./node_modules/jnwb/lib/bin/nwb test --coverage",
-    "test:watch": "node ./node_modules/jnwb/lib/bin/nwb test --server"
+    "build": "npm run clean && npm run lint && babel src -d lib",
+    "clean": "rm -rf lib",
+    "lint": "eslint ./",
+    "lint:fix": "eslint --fix ./",
+    "start": "npm run lint && babel-node demo",
+    "prepublish": "npm run build"
   },
   "dependencies": {
-    "commander": "^2.13.0",
+    "commander": "^2.14.1",
+    "easycp": "0.0.2",
     "js-yaml": "^3.10.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.5"
   },
   "devDependencies": {
-    "jnwb": "^0.1.5"
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.9.0"
   },
-  "author": "",
-  "homepage": "",
   "license": "MIT",
-  "repository": ""
+  "repository": "https://github.com/jamrizzi/dbk",
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "4"
+          }
+        }
+      ],
+      "stage-2"
+    ]
+  },
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "eslintIgnore": [
+    "lib"
+  ]
 }
