@@ -20,7 +20,7 @@ Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
 ## Installation
 
 ```sh
-npm install --save-dev dbk
+npm install -g dbk
 ```
 
 
@@ -32,17 +32,43 @@ npm install --save-dev dbk
 
 ## Usage
 
+```sh
+dbk -h
+```
+
+```sh
+  Usage: src [options] [command]
+
+
+  Options:
+
+    -V, --version           output the version number
+    -c --compose [path]     docker compose path
+    -f --dockerfile [path]  dockerfile path
+    -i --image [name]       name of image
+    -s --service [name]     name of the service
+    -t --tag [name]         tag of docker image
+    -v --verbose            verbose logging
+    -h, --help              output usage information
+
+
+  Commands:
+
+    build [service]
+    info [service]
+    pull [service]
+    push [service]
+    run [service]
+    ssh [service]
+    up
+```
+
 [Contribute](https://github.com/jamrizzi/docker-build-kit/blob/master/CONTRIBUTING.md) usage docs
 
 
 ## Support
 
 Submit an [issue](https://github.com/jamrizzi/docker-build-kit/issues/new)
-
-
-## Screenshots
-
-[Contribute](https://github.com/jamrizzi/docker-build-kit/blob/master/CONTRIBUTING.md) a screenshot
 
 
 ## Contributing
