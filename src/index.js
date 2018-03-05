@@ -104,10 +104,9 @@ async function action(cmd, options) {
       break;
     case 'run':
       if (commander.image || commander.tag) {
-        await docker.run({
-          image: `${imageName}:${tagName}`,
-          name: `_${serviceName}`
-        });
+        throw boom.badRequest(
+          'user the docker cli to run custom images and tags'
+        );
       } else {
         await easycp('docker-compose', ['-f', composePath, 'run', serviceName]);
       }
@@ -115,8 +114,11 @@ async function action(cmd, options) {
     case 'ssh':
       {
         let containerName = null;
+        const rootFolderName = rootPath.replace(/^.*\//g, '');
         _.each(await docker.getContainerNames(), possibleContainerName => {
-          if (possibleContainerName.includes(`_${serviceName}`)) {
+          if (
+            possibleContainerName.includes(`${rootFolderName}_${serviceName}`)
+          ) {
             containerName = possibleContainerName;
             return false;
           }

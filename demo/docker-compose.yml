@@ -1,5 +1,6 @@
 some-service:
   image: jamrizzi/some-image:stable
+  entrypoint: tail -f /dev/null
 
 another-service:
   image: jamrizzi/another-image:stable
