@@ -1,6 +1,6 @@
 {
   "name": "dbk",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Tooling for building and testing docker images",
   "homepage": "https://github.com/jamrizzi/dbk",
   "author": {

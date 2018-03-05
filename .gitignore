@@ -47,5 +47,5 @@ idea/
 .idea/
 
 # Application
-lib/
-bin/
+/lib
+/bin
