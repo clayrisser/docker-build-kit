@@ -37,7 +37,7 @@ dbk -h
 ```
 
 ```sh
-  Usage: src [options] [command]
+  Usage: dbk [options] [command]
 
 
   Options:
@@ -46,9 +46,11 @@ dbk -h
     -c --compose [path]     docker compose path
     -f --dockerfile [path]  dockerfile path
     -i --image [name]       name of image
+    -r --root [path]        root path
     -s --service [name]     name of the service
     -t --tag [name]         tag of docker image
     -v --verbose            verbose logging
+    --root-context          use root path as context path
     -h, --help              output usage information
 
 
@@ -62,8 +64,6 @@ dbk -h
     ssh [service]
     up
 ```
-
-[Contribute](https://github.com/jamrizzi/docker-build-kit/blob/master/CONTRIBUTING.md) usage docs
 
 
 ## Support
