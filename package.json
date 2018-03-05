@@ -18,7 +18,7 @@
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
     "prepublish": "npm run build",
-    "start": "npm run lint && cd demo && babel-node ../src"
+    "start": "npm run lint && babel-node src -r demo"
   },
   "dependencies": {
     "boom": "^7.2.0",

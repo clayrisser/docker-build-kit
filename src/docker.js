@@ -27,16 +27,8 @@ class Docker {
     return easycp('docker', ['push', image]);
   }
 
-  async run({ image, port }) {
-    return easycp('docker', [
-      'run',
-      '--rm',
-      '--name',
-      `some-${image}`,
-      port ? '--port' : '',
-      port || '',
-      image
-    ]);
+  async run({ image, name = 'some-contianer' }) {
+    return easycp('docker', ['run', '--rm', '--name', name, image]);
   }
 }
 

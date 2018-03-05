@@ -15,9 +15,11 @@ commander.version(version);
 commander.option('-c --compose [path]', 'docker compose path');
 commander.option('-f --dockerfile [path]', 'dockerfile path');
 commander.option('-i --image [name]', 'name of image');
+commander.option('-r --root [path]', 'root path');
 commander.option('-s --service [name]', 'name of the service');
 commander.option('-t --tag [name]', 'tag of docker image');
 commander.option('-v --verbose', 'verbose logging');
+commander.option('--root-context', 'use root path as context path');
 commander.command('build [service]');
 commander.command('info [service]');
 commander.command('pull [service]');
@@ -35,22 +37,18 @@ async function action(cmd, options) {
     await validate(commander.compose || '', joi.string(), 'compose');
   if (commander.dockerfile)
     await validate(commander.dockerfile || '', joi.string(), 'dockerfile');
-  const dockerfilePath = path.resolve(
-    process.cwd(),
-    commander.dockerfile || 'Dockerfile'
-  );
+  if (commander.root)
+    await validate(commander.root || '', joi.string(), 'root');
+  const rootPath = path.resolve(process.cwd(), commander.root || '');
   const composePath = path.resolve(
-    process.cwd(),
+    rootPath,
     commander.compose || 'docker-compose.yml'
   );
   let compose = await new Promise(resolve => {
-    fs.readFile(
-      path.resolve(process.cwd(), 'docker-compose.yml'),
-      (err, data) => {
-        if (err) return resolve(null);
-        return resolve(yaml.safeLoad(data.toString()));
-      }
-    );
+    fs.readFile(composePath, (err, data) => {
+      if (err) return resolve(null);
+      return resolve(yaml.safeLoad(data.toString()));
+    });
   });
   if (commander.service)
     await validate(commander.service || '', joi.string(), 'service');
@@ -67,11 +65,24 @@ async function action(cmd, options) {
   if (!image.includes(':')) image += ':latest';
   const imageName = image.replace(/\:.+$/, '');
   const tagName = commander.tag || image.replace(/^.+\:/, '');
+  let servicePath = rootPath;
+  if (fs.existsSync(path.resolve(rootPath, serviceName))) {
+    servicePath = path.resolve(rootPath, serviceName);
+  }
+  let tagPath = servicePath;
+  if (fs.existsSync(path.resolve(servicePath, tagName))) {
+    tagPath = path.resolve(servicePath, tagName);
+  }
+  const dockerfilePath = path.resolve(
+    tagPath,
+    commander.dockerfile || 'Dockerfile'
+  );
   switch (cmd) {
     case 'build':
       await docker.build({
         image: `${imageName}:${tagName}`,
-        dockerfile: dockerfilePath
+        dockerfile: dockerfilePath,
+        context: commander.rootContext ? rootPath : servicePath
       });
       break;
     case 'pull':
@@ -92,7 +103,14 @@ async function action(cmd, options) {
       ]);
       break;
     case 'run':
-      await easycp('docker-compose', ['-f', composePath, 'run', serviceName]);
+      if (commander.image || commander.tag) {
+        await docker.run({
+          image: `${imageName}:${tagName}`,
+          name: `_${serviceName}`
+        });
+      } else {
+        await easycp('docker-compose', ['-f', composePath, 'run', serviceName]);
+      }
       break;
     case 'ssh':
       {
