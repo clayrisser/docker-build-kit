@@ -6,6 +6,8 @@
 
 Tooling for building and testing docker images
 
+![](assets/docker-build-kit.png)
+
 Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
 
 
